@@ -17,11 +17,11 @@ setup(
         ]
     },
     install_requires=[
-        'django>=1.8,<2',
+        'django>=1.11,<2',
     ],
     include_package_data=True,
-    version='1.2.3',
-    description='Bootstrap 3/4 compatible datepicker for Django projects.',
+    version='1.2.4',
+    description='Bootstrap 4 compatible datepicker for Django projects.',
     long_description=long_description,
     author='Paul Bucher',
     author_email='paulb@lctcb.org',
