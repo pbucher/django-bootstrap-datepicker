@@ -129,14 +129,17 @@ class DatePicker(DateTimeInput):
     def render(self, name, value, attrs=None):
         if value is None:
             value = ''
+
         extra_attrs = dict()
         extra_attrs['type'] = self.input_type
         extra_attrs['name'] = name
         input_attrs = self.build_attrs(attrs, extra_attrs)
+
         if value != '':
             # Only add the 'value' attribute if a value is non-empty.
             input_attrs['value'] = force_text(self.format_value(value))
         input_attrs = {key: conditional_escape(val) for key, val in input_attrs.items()}
+
         if not self.picker_id:
             self.picker_id = (input_attrs.get('id', '') + '_pickers').replace(' ', '_')
         self.div_attrs['id'] = self.picker_id
