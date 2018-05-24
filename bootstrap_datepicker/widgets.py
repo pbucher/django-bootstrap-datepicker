@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from json import dumps as json_dumps
-
 from django.forms.utils import flatatt
 from django.forms.widgets import DateTimeInput
 from django.utils.safestring import mark_safe
@@ -8,33 +6,44 @@ from django.utils import translation
 from django.utils.html import conditional_escape
 from django.utils.encoding import force_text
 
+import json
+
+def get_supported_locale():
+    lang = translation.get_language()
+    if lang:
+        lang = lang.lower()
+        # There is language name that length>2 or contains uppercase.
+        lang_map = {
+            'en-au': 'en-AU',
+            'en-gb': 'en-GB',
+            'en-us': 'en-us',
+            'fr-CH': 'fr-CH',
+            'it-ch': 'it-CH',
+            'nl-be': 'nl-BE',
+            'pt-br': 'pt-BR',
+            'rs-latin': 'rs-latin',
+            'sr-latin': 'sr-latin',
+            'zh-cn': 'zh-CN',
+            'zh-tw': 'zh-TW',
+        }
+        if len(lang) > 2:
+            lang = lang_map.get(lang, 'en-us')
+    return lang
+
+
 
 class DatePicker(DateTimeInput):
     class Media:
         class JSFiles(object):
+            # Adding an extra __reversed__ method instead of renaming __iter__
+            # This keeps it compatible for both version 2 and below
+            def __reversed__(self):
+                return self.__iter__()            
             def __iter__(self):
                 yield 'js/bootstrap-datepicker.min.js'
-                lang = translation.get_language()
-                if lang:
-                    lang = lang.lower()
-                    # There is language name that length>2 or contains uppercase.
-                    lang_map = {
-                        'en-au': 'en-AU',
-                        'en-gb': 'en-GB',
-                        'en-us': 'en-us',
-                        'fr-CH': 'fr-CH',
-                        'it-ch': 'it-CH',
-                        'nl-be': 'nl-BE',
-                        'pt-br': 'pt-BR',
-                        'rs-latin': 'rs-latin',
-                        'sr-latin': 'sr-latin',
-                        'zh-cn': 'zh-CN',
-                        'zh-tw': 'zh-TW',
-                    }
-                    if len(lang) > 2:
-                        lang = lang_map.get(lang, 'en-us')
-                    if lang not in ('en', 'en-us'):
-                        yield 'js/locales/bootstrap-datepicker.%s.min.js' % (lang)
+                lang = get_supported_locale()
+                if lang not in ('en', 'en-us'):
+                    yield 'js/locales/bootstrap-datepicker.%s.min.js' % (lang)
 
         js = JSFiles()
         css = {'all': ('css/bootstrap-datepicker3.standalone.min.css',), }
@@ -64,13 +73,13 @@ class DatePicker(DateTimeInput):
             format = format.replace(js, py)
         return format
 
-    html_template = """
-    <div%(div_attrs)s>
-      <input%(input_attrs)s/>
-      <span class="input-group-addon">
-        <span%(icon_attrs)s></span>
-      </span>
-    </div>"""
+    html_template = '''
+        <div%(div_attrs)s>
+            <input%(input_attrs)s/>
+            <span class="input-group-addon">
+                <span%(icon_attrs)s></span>
+            </span>
+        </div>'''
 
     js_template = '''
         <script>
@@ -78,11 +87,22 @@ class DatePicker(DateTimeInput):
                 var callback = function() {
                     $(function(){$("#%(picker_id)s:has(input:not([readonly],[disabled]))").datepicker(%(options)s);});
                 };
-                if(window.addEventListener)
+                // if window object id loaded already, call directly callback function
+                if (-1 != $.inArray(
+                        document.readyState,
+                        ["loaded", "interactive", "complete"]
+                    )
+                ) {
+                    callback();
+                } 
+                else if (window.addEventListener) {
                     window.addEventListener("load", callback, false);
-                else if (window.attachEvent)
+                }
+                else if (window.attachEvent) {
                     window.attachEvent("onload", callback);
-                else window.onload = callback;
+                }
+                else
+                    window.onload = callback;
             })(window);
         </script>'''
 
@@ -99,7 +119,7 @@ class DatePicker(DateTimeInput):
         self.div_attrs = div_attrs and div_attrs.copy() or {}
         self.icon_attrs = icon_attrs and icon_attrs.copy() or {}
         self.picker_id = self.div_attrs.get('id') or None
-        if options is False:  # datepicker will not be initalized when options is False
+        if options == False:  # datepicker will not be initalized when options is False
             self.options = False
         else:
             self.options = options and options.copy() or {}
@@ -127,7 +147,7 @@ class DatePicker(DateTimeInput):
                                          input_attrs=flatatt(input_attrs),
                                          icon_attrs=flatatt(icon_attrs))
         if self.options:
-            js = self.js_template % dict(picker_id=picker_id, options=json_dumps(self.options or {}))
+            js = self.js_template % dict(picker_id=picker_id, options=json.dumps(self.options or {}))
         else:
             js = ''
         return mark_safe(force_text(html + js))
