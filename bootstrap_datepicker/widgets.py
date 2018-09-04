@@ -123,10 +123,10 @@ class DatePicker(DateTimeInput):
             self.options = False
         else:
             self.options = options and options.copy() or {}
-            if format and not self.options.get('format') and not self.attrs.get('date-format'):
+             if format and not self.options.get('format') and not self.attrs.get('date-format'):
                 self.options['format'] = self.conv_datetime_format_py2js(format)
 
-    def render(self, name, value, attrs=None):
+    def render(self, name, value, attrs=None, renderer=None):
         if value is None:
             value = ''
 
