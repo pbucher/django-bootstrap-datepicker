@@ -6,6 +6,8 @@ This package includes a Django widget for displaying date pickers with Bootstrap
 
     pip install django-bootstrap-datepicker
 
+Make sure to add `bootstrap_datepicker` to your `INSTALLED_APPS`. Then run `manage.py collectstatic` to include the bootstrap-datepicker js and css files.
+
 ## To-Do
 
     General cleanup and testing
