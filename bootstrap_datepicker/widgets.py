@@ -11,7 +11,7 @@ import json
 class DatePicker(DateTimeInput):
     class Media:
         #if you need a different local add it to the below string - example 'js/locales/bootstrap-datepicker.en-GB.min.js'
-        js = {'all' : ('js/bootstrap-datepicker.min.js',),}
+        js = ('js/bootstrap-datepicker.min.js',)
         css = {'all': ('css/bootstrap-datepicker3.standalone.min.css',), }
     # http://bootstrap-datepicker.readthedocs.org/en/stable/options.html#format
     # http://docs.python.org/2/library/datetime.html#strftime-strptime-behavior
