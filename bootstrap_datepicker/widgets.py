@@ -8,44 +8,10 @@ from django.utils.encoding import force_text
 
 import json
 
-def get_supported_locale():
-    lang = translation.get_language()
-    if lang:
-        lang = lang.lower()
-        # There is language name that length>2 or contains uppercase.
-        lang_map = {
-            'en-au': 'en-AU',
-            'en-gb': 'en-GB',
-            'en-us': 'en-us',
-            'fr-CH': 'fr-CH',
-            'it-ch': 'it-CH',
-            'nl-be': 'nl-BE',
-            'pt-br': 'pt-BR',
-            'rs-latin': 'rs-latin',
-            'sr-latin': 'sr-latin',
-            'zh-cn': 'zh-CN',
-            'zh-tw': 'zh-TW',
-        }
-        if len(lang) > 2:
-            lang = lang_map.get(lang, 'en-us')
-    return lang
-
-
-
 class DatePicker(DateTimeInput):
     class Media:
-        class JSFiles(object):
-            # Adding an extra __reversed__ method instead of renaming __iter__
-            # This keeps it compatible for both version 2 and below
-            def __reversed__(self):
-                return self.__iter__()            
-            def __iter__(self):
-                yield 'js/bootstrap-datepicker.min.js'
-                lang = get_supported_locale()
-                if lang not in ('en', 'en-us'):
-                    yield 'js/locales/bootstrap-datepicker.%s.min.js' % (lang)
-
-        js = JSFiles()
+        #if you need a different local add it to the below string - example 'js/locales/bootstrap-datepicker.en-GB.min.js'
+        js = ('js/bootstrap-datepicker.min.js')
         css = {'all': ('css/bootstrap-datepicker3.standalone.min.css',), }
     # http://bootstrap-datepicker.readthedocs.org/en/stable/options.html#format
     # http://docs.python.org/2/library/datetime.html#strftime-strptime-behavior
