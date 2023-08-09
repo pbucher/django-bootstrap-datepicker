@@ -17,14 +17,14 @@ setup(
         ]
     },
     install_requires=[
-        'django>=2.0',
+        'django>=4.2',
     ],
     include_package_data=True,
-    version='1.4.0',
-    description='Bootstrap 4 compatible datepicker for Django projects.',
+    version='1.4.1',
+    description='Bootstrap 5 compatible datepicker for Django projects.',
     long_description=long_description,
     author='Paul Bucher',
-    author_email='paulb@lctcb.org',
+    author_email='paul@sandyfeetsoftware.com',
     url='https://github.com/pbucher/django-bootstrap-datepicker',
     license='Apache License 2.0',
     classifiers=[
