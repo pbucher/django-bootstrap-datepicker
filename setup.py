@@ -4,7 +4,9 @@ from setuptools import setup
 long_description = ''
 if 'upload' in sys.argv or 'register' in sys.argv:
     import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
+    long_description = pypandoc.convert_file('README.md', 'rst')
+    #long_description = pypandoc.convert('README.md', 'rst')
+
 
 setup(
     name='django-bootstrap-datepicker',
