@@ -1,6 +1,6 @@
 # django-bootstrap-datetimepicker
 
-This package includes a Django widget for displaying date pickers with Bootstrap 4. It uses [Bootstrap datepicker widget version 1.6.4 ](https://github.com/uxsolutions/bootstrap-datepicker).
+This package includes a Django widget for displaying date pickers with Bootstrap 4. It uses [Bootstrap datepicker widget version 1.10 ](https://github.com/uxsolutions/bootstrap-datepicker).
 
 ## Install
 
@@ -8,9 +8,9 @@ This package includes a Django widget for displaying date pickers with Bootstrap
 
 Make sure to add `bootstrap_datepicker` to your `INSTALLED_APPS`. Then run `manage.py collectstatic` to include the bootstrap-datepicker js and css files.
 
-## To-Do
+## New
 
-    General cleanup and testing
+Updated to 1.10 of Bootstrap-datepicker
 
 ## Example
 
@@ -20,16 +20,18 @@ Make sure to add `bootstrap_datepicker` to your `INSTALLED_APPS`. Then run `mana
 from bootstrap_datepicker.widgets import DatePicker
 from django import forms
 
-class ToDoForm(forms.Form):
-    todo = forms.CharField(
-        widget=forms.TextInput(attrs={"class": "form-control"}))
-    date = forms.DateField(
-        widget=DatePicker(
-            options={
-                "format": "mm/dd/yyyy",
-                "autoclose": True
-            }
-        )
+class ToDoForm(CreateView):
+    fields = ("testdate")
+    .......
+
+    def get_form(self, form_class=None):
+    .......
+    form.fields['testdate'].widget =  DatePicker(
+        options={
+            "format": "mm/dd/yyyy",
+            "autoclose": True,
+            "daysOfWeekDisabled": "0,6"
+        }
     )
 ```
 
@@ -49,11 +51,12 @@ You don't need to set the `language` option, because it will be set the current 
     <link rel="stylesheet" href="{% static 'contrib/bootstrap.css' %}">
     <link rel="stylesheet" href="{% static 'contrib/font-awesome.min.css' %}">
     <script src="{% static 'contrib/bootstrap.js' %}"></script>
+    {{ form.media }}
   </head>
   <body>
     <form method="post" role="form">
-      {{ form|bootstrap }}
       {% csrf_token %}
+      {{ form|crispy }}
       <div class="form-group">
         <input type="submit" value="Submit" class="btn btn-primary" />
       </div>
@@ -62,14 +65,12 @@ You don't need to set the `language` option, because it will be set the current 
 </html>
 ```
 
-Here we assume you're using [django-bootstrap-form](https://github.com/tzangms/django-bootstrap-form) or 
-[django-jinja-bootstrap-form](https://github.com/samuelcolvin/django-jinja-bootstrap-form) but you can
-draw out your HTML manually.
+Here we assume you're using [django-crispy-forms]https://github.com/django-crispy-forms/django-crispy-forms.
 
 ## Requirements
 
 * Python >= 3.9
 * Django >= 4.0
 * Bootstrap >= 4.0
-* jquery >= 3.6.1
+* jquery >= 3.4.0
 * font-awesome >= 4.5.X
